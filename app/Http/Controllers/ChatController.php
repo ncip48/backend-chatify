@@ -17,7 +17,7 @@ class ChatController extends Controller
         $you = $request->target_user_id;
         $chats = Chat::where('user_id', $me)->where('target_id', $you)->orWhere('user_id', $you)->where('target_id', $me)->orderBy('id', 'desc')->get();
         $chats = $chats->map(function ($chat) {
-            $chat['time_parse'] = $chat['created_at']->format('H:m');
+            $chat['time_parse'] = $chat['created_at']->format('H:i');
             $chat['status'] = $chat->user_id == auth()->user()->id ? 'sent' : 'received';
             $chat['recent_chat_me'] = $chat['user_id'] == auth()->user()->id  ? true : false;
             return $chat;
