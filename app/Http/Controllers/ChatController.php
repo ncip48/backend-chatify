@@ -14,10 +14,12 @@ class ChatController extends Controller
         $req = json_decode($request->getContent(), false);
         $authUser = auth()->user();
         $me = $authUser->id;
-        $you = $req->target_user_id;
-        $chats = Chat::where('user_id', $me)->where('target_id', $you)->orWhere('user_id', $you)->where('target_id', $me)->get();
+        $you = $request->target_user_id;
+        $chats = Chat::where('user_id', $me)->where('target_id', $you)->orWhere('user_id', $you)->where('target_id', $me)->orderBy('id', 'desc')->get();
         $chats = $chats->map(function ($chat) {
+            $chat['time_parse'] = $chat['created_at']->format('H:m');
             $chat['status'] = $chat->user_id == auth()->user()->id ? 'sent' : 'received';
+            $chat['recent_chat_me'] = $chat['user_id'] == auth()->user()->id  ? true : false;
             return $chat;
         });
         return AuthController::customResponse(true, 'Success Get Chat', $chats);
@@ -34,8 +36,8 @@ class ChatController extends Controller
             'target_id' => $you,
             'message' => $req->message,
         ]);
-        event(new ChatSent($req->message, $me, $you));
-        return AuthController::customResponse(true, 'Success Send Chat', null);
+        event(new ChatSent($chat, $me, $you));
+        return AuthController::customResponse(true, 'Success Send Chat', $chat);
     }
 
     public function readChat(Request $request)

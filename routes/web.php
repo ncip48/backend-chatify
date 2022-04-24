@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return "Dua Tiga Babi, Chatify";
 });
+
+Route::get('/test', function () {
+    return now()->format('Y-m-d H:i:s');
+});

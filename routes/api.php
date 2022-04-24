@@ -20,9 +20,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/users', [App\Http\Controllers\UserController::class, 'allUsers']);
     Route::patch('/update-profile', [App\Http\Controllers\UserController::class, 'updateProfile']);
 
-    Route::get('/chat', [App\Http\Controllers\ChatController::class, 'getChats']);
+    Route::get('/chat/{target_user_id}', [App\Http\Controllers\ChatController::class, 'getChats']);
     Route::post('/chat', [App\Http\Controllers\ChatController::class, 'sendChat']);
     Route::get('/contacts', [App\Http\Controllers\UserController::class, 'getContacts']);
+    Route::post('/search-users', [App\Http\Controllers\UserController::class, 'searchUsers']);
     // API route for logout user
     Route::post('/auth/logout', [App\Http\Controllers\AuthController::class, 'logout']);
 });
